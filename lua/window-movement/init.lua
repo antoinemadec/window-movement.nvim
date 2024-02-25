@@ -43,28 +43,22 @@ end
 ---@param win_1 integer: window handle
 ---@param win_2 integer: window handle
 function M.swap_win(win_1, win_2)
-  local win_cursor = {
-    a.nvim_win_get_cursor(win_1),
-    a.nvim_win_get_cursor(win_2),
-  }
-  local win_opts = {
-    M.save_win_opts(win_1),
-    M.save_win_opts(win_2),
-  }
-  local buf = {
-    a.nvim_win_get_buf(win_1),
-    a.nvim_win_get_buf(win_2),
-  }
+  local win_cursor_1 = a.nvim_win_get_cursor(win_1)
+  local win_cursor_2 = a.nvim_win_get_cursor(win_2)
+  local win_opts_1 = M.save_win_opts(win_1)
+  local win_opts_2 = M.save_win_opts(win_2)
+  local buf_1 = a.nvim_win_get_buf(win_1)
+  local buf_2 = a.nvim_win_get_buf(win_2)
   -- src -> dst
-  M.restore_win_opts(win_2, win_opts[1])
-  a.nvim_win_set_buf(win_2, buf[1]) -- opening a buffer messes up the window opts
-  M.restore_win_opts(win_2, win_opts[1])
-  a.nvim_win_set_cursor(win_2, win_cursor[1])
+  M.restore_win_opts(win_2, win_opts_1)
+  a.nvim_win_set_buf(win_2, buf_1) -- opening a buffer messes up the window opts
+  M.restore_win_opts(win_2, win_opts_1)
+  a.nvim_win_set_cursor(win_2, win_cursor_1)
   -- dst -> src
-  M.restore_win_opts(win_1, win_opts[2])
-  a.nvim_win_set_buf(win_1, buf[2]) -- opening a buffer messes up the window opts
-  M.restore_win_opts(win_1, win_opts[2])
-  a.nvim_win_set_cursor(win_1, win_cursor[2])
+  M.restore_win_opts(win_1, win_opts_2)
+  a.nvim_win_set_buf(win_1, buf_2) -- opening a buffer messes up the window opts
+  M.restore_win_opts(win_1, win_opts_2)
+  a.nvim_win_set_cursor(win_1, win_cursor_2)
 end
 
 -- swap current window and jump in its neighbor
@@ -74,8 +68,8 @@ function M.move_win_to_direction(direction)
   local current_neighbors = current_window:get_neighbors()
   local destination_window = current_neighbors[direction]
   if destination_window ~= nil then
-    M.swap_win(current_window.win, destination_window.win)
-    a.nvim_set_current_win(destination_window.win)
+    M.swap_win(current_window.win_handle, destination_window.win_handle)
+    a.nvim_set_current_win(destination_window.win_handle)
   else
     local letter = {
       up = "K",

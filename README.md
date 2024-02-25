@@ -1,8 +1,8 @@
-# window-movement.nvim
+# 🔳 window-movement.nvim
 
 Move your windows around with ease.
 
-### Installation
+### 📦 Installation
 
 Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 
@@ -13,7 +13,7 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 }
 ```
 
-## Usage
+## 🚀 Usage
 
 Example of mapping where:
 - `Alt + hjkl/arrows` jump in windows
@@ -58,5 +58,3 @@ for _, mode in pairs({ 'n', 'i', 't' }) do
   remap_arrow_hjkl(mode, '<C-A-S-Right>', function() require('window-movement').move_win_to_tab("next") end, default_opts)
 end
 ```
-
-## Related Projects
