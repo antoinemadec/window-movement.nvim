@@ -77,7 +77,7 @@ function M.move_win_to_direction(direction)
       left = "H",
       right = "L",
     }
-    vim.cmd([[execut "normal \<C-w>]] .. letter[direction] .. '"')
+    vim.cmd("wincmd " .. letter[direction])
   end
 end
 
