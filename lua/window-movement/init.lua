@@ -178,7 +178,10 @@ end
 ---@param create_win_func function: function called to populate the side bar
 function M.toggle_side_bar(win_name, create_win_func)
   if vim.t[win_name] then
-    vim.api.nvim_win_close(vim.t[win_name], true)
+    if not pcall(vim.api.nvim_win_close, vim.t[win_name], true) then
+      vim.notify("couldn't close " .. win_name, vim.log.levels.WARN,
+        { title = "window-movement.nvim" })
+    end
     vim.t[win_name] = nil
   else
     create_win_func()
