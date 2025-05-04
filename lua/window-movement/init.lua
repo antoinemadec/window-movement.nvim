@@ -2,6 +2,15 @@ local M = {}
 local a = vim.api
 local Window = require("window-movement.window")
 
+-- workaround for nvim_win_close, see https://github.com/neovim/neovim/issues/33780
+---@param window integer: `window-ID`, or 0 for current window
+---@param force boolean: Behave like `:close!`
+function M.nvim_win_close(window, force)
+  a.nvim_win_call(window, function()
+    vim.cmd({ cmd = "close", bang = force })
+  end)
+end
+
 -- save window options of win
 ---@param win integer: window handle
 function M.save_win_opts(win)
@@ -36,7 +45,7 @@ function M.move_win(src_win, dst_win)
   M.restore_win_opts(dst_win, src_win_opts)
   a.nvim_win_set_cursor(dst_win, src_win_cursor)
 
-  a.nvim_win_close(src_win, true)
+  M.nvim_win_close(src_win, true)
 end
 
 -- swap win_1 and win_2
@@ -178,7 +187,7 @@ end
 ---@param create_win_func function: function called to populate the side bar
 function M.toggle_side_bar(win_name, create_win_func)
   if vim.t[win_name] then
-    if not pcall(vim.api.nvim_win_close, vim.t[win_name], true) then
+    if not pcall(M.nvim_win_close, vim.t[win_name], true) then
       vim.notify("couldn't close " .. win_name, vim.log.levels.WARN,
         { title = "window-movement.nvim" })
     end
@@ -190,7 +199,7 @@ function M.toggle_side_bar(win_name, create_win_func)
     vim.wo.winfixwidth = true
     vim.wo.number = false
     vim.wo.relativenumber = false
-    vim.t[win_name] = vim.api.nvim_get_current_win()
+    vim.t[win_name] = a.nvim_get_current_win()
     vim.cmd("wincmd p")
   end
 end
